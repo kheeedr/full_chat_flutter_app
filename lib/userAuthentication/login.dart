@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:full_chat_application/serverFunctions/server_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../Utils.dart';
-import '../provider/my_provider.dart';
 import '../firebase_helper/fireBaseHelper.dart';
+import '../provider/my_provider.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -17,7 +16,6 @@ class LoginState extends State<Login> {
   String email = "";
   String password = "";
   late BuildContext dialogContext;
-
 
   @override
   Widget build(BuildContext context) {
@@ -94,10 +92,10 @@ class LoginState extends State<Login> {
                           child: IconButton(
                             color: Colors.white,
                             onPressed: () {
-                              if(email.isEmpty || password.isEmpty ){
-                                buildShowSnackBar(context, "please check your info.");
-
-                              }else {
+                              if (email.isEmpty || password.isEmpty) {
+                                buildShowSnackBar(
+                                    context, "please check your info.");
+                              } else {
                                 showDialog(
                                     context: context,
                                     barrierDismissible: false,
@@ -106,20 +104,29 @@ class LoginState extends State<Login> {
                                       return const Center(
                                         child: CircularProgressIndicator(),
                                       );
-                                    }
-                                );
+                                    });
                                 FireBaseHelper()
-                                    .signIn(email: email.trim().toString(), password: password.trim().toString())
+                                    .signIn(
+                                        email: email.trim().toString(),
+                                        password: password.trim().toString())
                                     .then((result) {
-                                  if(result == "Welcome"){
-                                     Navigator.of(context).pushNamedAndRemoveUntil(
-                                       'all_users', (Route<dynamic> route) => false );
-                                    buildShowSnackBar(context,result+" "+ Provider.of<MyProvider>(context,listen: false).auth.currentUser!.displayName);
+                                  if (result == "Welcome") {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil('all_users',
+                                            (Route<dynamic> route) => false);
+                                    buildShowSnackBar(
+                                        context,
+                                        result +
+                                            " " +
+                                            Provider.of<MyProvider>(context,
+                                                    listen: false)
+                                                .auth
+                                                .currentUser!
+                                                .displayName);
                                   } else if (result != null) {
                                     buildShowSnackBar(context, result);
                                     Navigator.pop(dialogContext);
-                                  }
-                                  else {
+                                  } else {
                                     Navigator.pop(dialogContext);
                                     buildShowSnackBar(context, "Try again.");
                                   }

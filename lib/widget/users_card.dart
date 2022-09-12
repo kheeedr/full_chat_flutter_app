@@ -4,16 +4,17 @@ class UsersCard extends StatelessWidget {
   final String userName;
 
   const UsersCard(this.userName, {Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
-      children:   [
+      children: [
         const CircleAvatar(
           backgroundColor: Colors.black12,
           backgroundImage: AssetImage("images/avatar.png"),
-          radius: 25.0,//radius of the circle avatar
+          radius: 25.0, //radius of the circle avatar
         ),
         Expanded(
           child: Padding(

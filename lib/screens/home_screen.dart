@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../firebase_helper/fireBaseHelper.dart';
 import '../provider/my_provider.dart';
 import '../serverFunctions/server_functions.dart';
@@ -16,15 +17,14 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   late MyProvider _appProvider;
 
-
   @override
   void didChangeDependencies() {
     _appProvider = Provider.of<MyProvider>(context, listen: false);
     super.didChangeDependencies();
   }
+
   @override
   void initState() {
-
     // notificationsActionStreamSubscription = AwesomeNotifications().actionStream.listen((action) {
     //   if(action.buttonKeyPressed == "Answer"){
     //     getCallType().then((value) {
@@ -39,14 +39,24 @@ class HomeScreenState extends State<HomeScreen> {
     // });
     super.initState();
     getDeviceToken().then((value) {
-      updateUserToken(Provider.of<MyProvider>(context, listen: false).auth.currentUser!.email, value);
+      updateUserToken(
+          Provider.of<MyProvider>(context, listen: false)
+              .auth
+              .currentUser!
+              .email,
+          value);
     });
-    onTokenRefresh(Provider.of<MyProvider>(context, listen: false).auth.currentUser!.email);
+    onTokenRefresh(Provider.of<MyProvider>(context, listen: false)
+        .auth
+        .currentUser!
+        .email);
   }
-@override
+
+  @override
   void dispose() {
-  super.dispose();
+    super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

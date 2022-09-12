@@ -1,11 +1,6 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:full_chat_application/firebase_helper/model/notification_messages.dart';
 import 'package:full_chat_application/provider/my_provider.dart';
-import 'package:full_chat_application/firebase_helper/fireBaseHelper.dart';
 import 'package:full_chat_application/widget/users_card.dart';
 import 'package:provider/provider.dart';
 
@@ -14,11 +9,8 @@ import '../Utils.dart';
 class Users extends StatelessWidget {
   const Users({Key? key}) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Card(
@@ -39,7 +31,9 @@ class Users extends StatelessWidget {
               ),
               Expanded(
                 child: StreamBuilder(
-                    stream: FirebaseFirestore.instance.collection('users').snapshots(),
+                    stream: FirebaseFirestore.instance
+                        .collection('users')
+                        .snapshots(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.hasError) {
@@ -60,22 +54,36 @@ class Users extends StatelessWidget {
                                 child: SizedBox(
                                   width: 60,
                                   child: InkWell(
-                                    onTap: (){
-                                      if(Provider.of<MyProvider>(context,listen: false).auth.currentUser!.uid
-                                          == snapshot.data!.docs[index]['userId'].toString()){
-                                        buildShowSnackBar(context, "You can't send message to yourself");
+                                    onTap: () {
+                                      if (Provider.of<MyProvider>(context,
+                                                  listen: false)
+                                              .auth
+                                              .currentUser!
+                                              .uid ==
+                                          snapshot.data!.docs[index]['userId']
+                                              .toString()) {
+                                        buildShowSnackBar(context,
+                                            "You can't send message to yourself");
                                       } else {
-                                        Provider.of<MyProvider>(context,listen: false)
-                                            .usersClickListener(snapshot, index, context);
+                                        Provider.of<MyProvider>(context,
+                                                listen: false)
+                                            .usersClickListener(
+                                                snapshot, index, context);
                                       }
                                     },
-                                    child: UsersCard(
-                                        Provider.of<MyProvider>(context, listen: false).auth.currentUser!.uid ==
-                                            snapshot.data!.docs[index]['userId'].toString() ?
-                                            "You" : snapshot.data!.docs[index]['name'].toString()),
+                                    child: UsersCard(Provider.of<MyProvider>(
+                                                    context,
+                                                    listen: false)
+                                                .auth
+                                                .currentUser!
+                                                .uid ==
+                                            snapshot.data!.docs[index]['userId']
+                                                .toString()
+                                        ? "You"
+                                        : snapshot.data!.docs[index]['name']
+                                            .toString()),
                                   ),
-                                )
-                            );
+                                ));
                           });
                     }),
               )
@@ -85,5 +93,4 @@ class Users extends StatelessWidget {
       ),
     );
   }
-
 }

@@ -9,13 +9,12 @@ class MyProvider with ChangeNotifier {
   final FirebaseAuth auth = FirebaseAuth.instance;
   QueryDocumentSnapshot<Object?>? peerUserData;
 
-
-
-  void usersClickListener(AsyncSnapshot<QuerySnapshot<Object?>> snapshot, int index, BuildContext context){
+  void usersClickListener(AsyncSnapshot<QuerySnapshot<Object?>> snapshot,
+      int index, BuildContext context) {
     FirebaseFirestore.instance
         .collection('users')
         .where('userId',
-        isEqualTo: snapshot.data!.docs[index]['userId'].toString())
+            isEqualTo: snapshot.data!.docs[index]['userId'].toString())
         .get()
         .then((QuerySnapshot value) {
       peerUserData = value.docs[0];
@@ -29,13 +28,15 @@ class MyProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void recentChatClickListener(AsyncSnapshot<QuerySnapshot<Object?>> snapshot, int index, BuildContext context){
-    if(snapshot.data!.docs[index]['messageSenderId'].toString() ==
-        Provider.of<MyProvider>(context, listen: false).auth.currentUser!.uid){
+  void recentChatClickListener(AsyncSnapshot<QuerySnapshot<Object?>> snapshot,
+      int index, BuildContext context) {
+    if (snapshot.data!.docs[index]['messageSenderId'].toString() ==
+        Provider.of<MyProvider>(context, listen: false).auth.currentUser!.uid) {
       FirebaseFirestore.instance
           .collection('users')
           .where('userId',
-          isEqualTo: snapshot.data!.docs[index]['messageReceiverId'].toString())
+              isEqualTo:
+                  snapshot.data!.docs[index]['messageReceiverId'].toString())
           .get()
           .then((QuerySnapshot value) {
         peerUserData = value.docs[0];
@@ -47,11 +48,12 @@ class MyProvider with ChangeNotifier {
         );
       });
       notifyListeners();
-    }else{
+    } else {
       FirebaseFirestore.instance
           .collection('users')
           .where('userId',
-          isEqualTo: snapshot.data!.docs[index]['messageSenderId'].toString())
+              isEqualTo:
+                  snapshot.data!.docs[index]['messageSenderId'].toString())
           .get()
           .then((QuerySnapshot value) {
         peerUserData = value.docs[0];
@@ -64,19 +66,18 @@ class MyProvider with ChangeNotifier {
       });
       notifyListeners();
     }
-
   }
 
-
-
-  String getChatId(BuildContext context){
-    return Provider.of<MyProvider>(context,listen: false).auth.currentUser!.uid.hashCode <=
-        Provider.of<MyProvider>(context,listen: false).peerUserData!["userId"].hashCode ?
-    "${Provider.of<MyProvider>(context,listen: false).auth.currentUser!.uid} - ${Provider.of<MyProvider>(context,listen: false).peerUserData!["userId"]}" :
-    "${Provider.of<MyProvider>(context,listen: false).peerUserData!["userId"]} - ${Provider.of<MyProvider>(context,listen: false).auth.currentUser!.uid}";
+  String getChatId(BuildContext context) {
+    return Provider.of<MyProvider>(context, listen: false)
+                .auth
+                .currentUser!
+                .uid
+                .hashCode <=
+            Provider.of<MyProvider>(context, listen: false)
+                .peerUserData!["userId"]
+                .hashCode
+        ? "${Provider.of<MyProvider>(context, listen: false).auth.currentUser!.uid} - ${Provider.of<MyProvider>(context, listen: false).peerUserData!["userId"]}"
+        : "${Provider.of<MyProvider>(context, listen: false).peerUserData!["userId"]} - ${Provider.of<MyProvider>(context, listen: false).auth.currentUser!.uid}";
   }
-
-
-
-
 }

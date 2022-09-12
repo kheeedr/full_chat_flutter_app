@@ -1,13 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:full_chat_application/serverFunctions/server_functions.dart';
 import 'package:provider/provider.dart';
 
 import '../Utils.dart';
-import '../provider/my_provider.dart';
 import '../firebase_helper/fireBaseHelper.dart';
-import 'login.dart';
+import '../provider/my_provider.dart';
 
 class Register extends StatefulWidget {
   const Register({Key? key}) : super(key: key);
@@ -126,43 +123,52 @@ class RegisterState extends State<Register> {
                   child: IconButton(
                     color: Colors.white,
                     onPressed: () {
-
-                      if(email.isEmpty || password.isEmpty || name.isEmpty){
+                      if (email.isEmpty || password.isEmpty || name.isEmpty) {
                         buildShowSnackBar(context, "please check your info.");
-
-                      }else {
+                      } else {
                         showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) {
-                            dialogContext = context;
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        );
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              dialogContext = context;
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            });
                         FireBaseHelper()
-                            .signUp(email: email.trim().toString(), password: password.trim().toString())
+                            .signUp(
+                                email: email.trim().toString(),
+                                password: password.trim().toString())
                             .then((result) {
-                          if(result == "true"){
-                            Navigator.pushReplacementNamed(
-                                context, 'login');
-                            Provider.of<MyProvider>(context,listen: false).auth.currentUser!.updateDisplayName(name.trim().toString());
+                          if (result == "true") {
+                            Navigator.pushReplacementNamed(context, 'login');
+                            Provider.of<MyProvider>(context, listen: false)
+                                .auth
+                                .currentUser!
+                                .updateDisplayName(name.trim().toString());
                             FireBaseHelper().addNewUser(
-                                Provider.of<MyProvider>(context,listen: false).auth.currentUser!.uid,
+                                Provider.of<MyProvider>(context, listen: false)
+                                    .auth
+                                    .currentUser!
+                                    .uid,
                                 name,
                                 email,
                                 "Online",
                                 "");
                             buildShowSnackBar(context, "Now you can login");
-                            getDeviceToken().then((value){
-                              registerDevice(Provider.of<MyProvider>(context,listen: false).auth.currentUser!.email,value );
+                            getDeviceToken().then((value) {
+                              registerDevice(
+                                  Provider.of<MyProvider>(context,
+                                          listen: false)
+                                      .auth
+                                      .currentUser!
+                                      .email,
+                                  value);
                             });
                           } else if (result != null) {
                             buildShowSnackBar(context, result);
                             Navigator.pop(dialogContext);
-                          }
-                          else {
+                          } else {
                             Navigator.pop(dialogContext);
                             buildShowSnackBar(context, "Try again.");
                           }
